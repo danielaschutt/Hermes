@@ -1,3 +1,5 @@
+
+using Argos.Domain;
 using Argos.Domain.AlertaRoot;
 using Argos.Domain.CameraLogRoot;
 using Argos.Domain.CameraRoot;

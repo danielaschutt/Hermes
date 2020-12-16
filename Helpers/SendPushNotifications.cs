@@ -15,23 +15,18 @@ namespace Hermes.Helpers
 
         private static string ServerKey = Environment.GetEnvironmentVariable("FIREBASE_KEY");
         
-        public static async Task<bool> send(string[] tokens, string title, string body, object data)
+        public static async Task<bool> send(string token, Notification notification, AlertPayload data)
         {
+            
             bool sent = false;
 
-            if (tokens.Count() > 0)
+            if (!string.IsNullOrEmpty(token))
             {
-                //Object creation
-
-                var messageInformation = new Message()
+                var messageInformation = new Message
                 {
-                    Notification = new Notification()
-                    {
-                        Title = title,
-                        Text = body
-                    },
-                    Data = data,
-                    RegistrationIds = tokens
+                    notification = notification,
+                    data = data,
+                    to = token
                 };
 
                 string jsonMessage = JsonConvert.SerializeObject(messageInformation);
@@ -40,9 +35,12 @@ namespace Hermes.Helpers
                 request.Headers.TryAddWithoutValidation("Authorization", "key=" + ServerKey);
                 request.Content = new StringContent(jsonMessage, Encoding.UTF8, "application/json");
                 HttpResponseMessage result;
+
                 using (var client = new HttpClient())
                 {
                     result = await client.SendAsync(request);
+
+                    var a = result;
                     sent = sent && result.IsSuccessStatusCode;
                 }
             }
